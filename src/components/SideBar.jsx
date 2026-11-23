@@ -46,12 +46,15 @@ function SideBar() {
 
       <div className="sidebar-section">
         <p className="sidebar-heading">MANAGEMENT</p>
-
-        <div className="sidebar-link disabled-link">
-          <FiShoppingBag />
-          <span>All Orders</span>
-          <small>Later</small>
-        </div>
+<NavLink
+  to="/all-orders"
+  className={({ isActive }) =>
+    `sidebar-link ${isActive ? "active" : ""}`
+  }
+>
+  <FiShoppingBag />
+  <span>All Orders</span>
+</NavLink>
 
         <div className="sidebar-link disabled-link">
           <FiSettings />

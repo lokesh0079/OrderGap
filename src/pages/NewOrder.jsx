@@ -8,13 +8,15 @@ import extractPrice from "../utils/extractPrice";
 import deliveryDate from "../utils/extractDeliveryDate";
 import DeliveryAddress from "../utils/extractAddress";
 import checkMissingFields from "../utils/checkMissingFields";
+import { useOrders } from "../context/OrderContext";
+
 const NewOrder=()=>{
   const [customer,setCustomer]=useState("");
     const [customerPhone,setCustomerPhone]=useState("");
       const [conversation,setConversation]=useState("");
         const [message,setMessage]=useState("");
         const [missingFieldValues,setMissingFieldValues]=useState([]);
-
+const { addOrder } = useOrders();
         const onSubmitAnalyze=(event)=>{
           event.preventDefault()
 
@@ -46,8 +48,9 @@ const NewOrder=()=>{
     const addressResult = DeliveryAddress(result);
 console.log("Delivery Address", addressResult);
   
-   
+  const orderID = `ORD-${Date.now()}`;
 const order = {
+ orderID,
   customer,
   customerPhone,
   quantities,
@@ -63,16 +66,20 @@ const order = {
 console.log("Complete Order:", order);
 
 const missing=checkMissingFields(order);
+order.missingFields = missing;
 console.log("Missing Fields",missing);
 setMissingFieldValues(missing);
 
 if(missing.length>0){
-  setMessage("Some order information is missing")
+  setMessage("Needs Information")
 }
 else{
-  setMessage("Order information is complete")
+  setMessage("Ready for Confirmation")
 }
-
+order.status = missing.length > 0
+  ? "Needs Information"
+  : "Ready for Confirmation";
+addOrder(order)
   }
   const clearMessage=()=>{
     setCustomer("");
